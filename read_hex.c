@@ -17,7 +17,6 @@ void readHexProgram(){
 }
 
 void printHexContents(int address_locations){
-
     for(int base = 0; base < address_locations; base += 16){
         unsigned char r_data[16];
         for(int offset = 0; offset < 16; offset++){
