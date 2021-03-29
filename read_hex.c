@@ -13,7 +13,7 @@ void readHexProgram(){
     }
 
     int r = fread(data, 1, WORDS, hex_file);
-    printf("Read %d chars.\n");
+    printf("Read %d chars.\n", r);
 }
 
 void printHexContents(int address_locations){
@@ -29,6 +29,21 @@ void printHexContents(int address_locations){
             base, r_data[0], r_data[1], r_data[2], r_data[3], r_data[4], r_data[5], r_data[6], r_data[7],
             r_data[8], r_data[9], r_data[10], r_data[11], r_data[12], r_data[13], r_data[14], r_data[15]);
         printf("%s \n", buf);
+    }
+}
+
+void write(int size){
+    int val = 0;
+    for(int i=0;i < size; i++){
+        unsigned char cmd = data[i];
+        printf("cmd: %02x\n", cmd);
+        for(int j=0; j<8; j++){
+            val = cmd & 1;
+            printf("bit: %d     ", val);
+            cmd = cmd >> 1;
+            printf("cmd: %d", cmd);
+            printf("\n");
+        }
     }
 }
 
