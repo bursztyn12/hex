@@ -2,6 +2,27 @@
 #include <stdlib.h>
 #include <string.h>
 #include <read_hex.h>
+#include <wiringPi.h>
+
+#define SHIFT_DATA      21
+#define SHIFT_CLK       20
+#define SHIFT_RSCLK     16
+
+int setupWiringPi(){
+  if (wiringPiSetupGpio() == -1){
+      printf("Error,can't start wiringPi!\n");
+      return 1;
+  }
+
+  printf("Succes,library wiringPi loaded!\n");
+  return 0;
+}
+
+void setupPins(){
+    pinMode(SHIFT_DATA, OUTPUT);
+    pinMode(SHIFT_CLK, OUTPUT);
+    pinMode(SHIFT_RSCLK, OUTPUT);
+}
 
 void readHexProgram(){
     FILE *hex_file;
@@ -36,17 +57,27 @@ void write(uint8_t size){
     for(uint8_t i=0;i < size; i++){
         unsigned char cmd = data[i];
         printf("cmd: %02x\n", cmd);
-        for(int j=0; j<8; j++){
+        for(uint8_t j=0; j<12; j++){
             val = cmd & 1;
             printf("bit: %d     ", val);
             cmd = cmd >> 1;
             printf("cmd: %d", cmd);
             printf("\n");
+            
+            digitalWrite(SHIFT_DATA, val);
+            digitalWrite(SHIFT_CLK, HIGH);
+            delay(1);
+            digitalWrite(SHIFT_CLK, LOW);
+            delay(1);
+            
+            digitalWrite(SHIFT_RSCLK, HIGH);
+            digitalWrite(SHIFT_RSCLK, LOW);
         }
+        delay(500);
     }
 }
 
-void printData(uint8_t size){
+void printHexData(uint8_t size){
     for(uint8_t i=0; i < size; i++){
         printf("%02x\n", data[i]);
     }
