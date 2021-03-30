@@ -3,10 +3,12 @@
 #include <string.h>
 #include <read_hex.h>
 #include <wiringPi.h>
+#include <stdint.h>
 
 #define SHIFT_DATA      21
-#define SHIFT_CLK       20
-#define SHIFT_RSCLK     16
+#define SHIFT_SRCLK     16
+#define SHIFT_RCLK     	20
+//#define SHIFT_OE	12
 
 int setupWiringPi(){
   if (wiringPiSetupGpio() == -1){
@@ -20,8 +22,10 @@ int setupWiringPi(){
 
 void setupPins(){
     pinMode(SHIFT_DATA, OUTPUT);
-    pinMode(SHIFT_CLK, OUTPUT);
-    pinMode(SHIFT_RSCLK, OUTPUT);
+    pinMode(SHIFT_RCLK, OUTPUT);;
+    pinMode(SHIFT_SRCLK, OUTPUT);
+    //pinMode(SHIFT_OE, OUTPUT);
+    //digitalWrite(SHIFT_OE, HIGH);
 }
 
 void readHexProgram(){
@@ -65,38 +69,43 @@ void writeData(uint8_t size){
             printf("\n");
             
             digitalWrite(SHIFT_DATA, val);
-            digitalWrite(SHIFT_CLK, HIGH);
+            digitalWrite(SHIFT_SRCLK, HIGH);
             delay(1);
-            digitalWrite(SHIFT_CLK, LOW);
+            digitalWrite(SHIFT_SRCLK, LOW);
             delay(1);
             
-            digitalWrite(SHIFT_RSCLK, HIGH);
-            digitalWrite(SHIFT_RSCLK, LOW);
+            digitalWrite(SHIFT_RCLK, HIGH);
+            digitalWrite(SHIFT_RCLK, LOW);
         }
         delay(1000);
     }
 }
 
-void writeAddress(uint8_t size){
+void writeAddress(uint32_t size){
     uint8_t val = 0;
-    for(uint8_t i=0; i<size; i++){
-        uint8_t address = i;
-        for(uint8_t j=0; j<15 j++){
-            val = cmd & 1;
-            printf("bit: %d     ", val);
+    for(uint32_t i=0; i<size; i++){
+        uint32_t address = i;
+        printf("-------------------\n");
+        printf("address: %02x\n", address);
+        for(uint8_t j=0; j<15; j++){
+            val = address & 1;
+            printf("bit: %d\n", val);
             address = address >> 1;
-            printf("cmd: %d", address);
-            printf("\n");
-            
             digitalWrite(SHIFT_DATA, val);
-            digitalWrite(SHIFT_CLK, HIGH);
-            delay(1);
-            digitalWrite(SHIFT_CLK, LOW);
-            delay(1);
-            
-            digitalWrite(SHIFT_RSCLK, HIGH);
-            digitalWrite(SHIFT_RSCLK, LOW);
-        }
+            digitalWrite(SHIFT_SRCLK, HIGH);
+            digitalWrite(SHIFT_SRCLK, LOW);
+
+	    //digitalWrite(SHIFT_RCLK, HIGH);
+	    ///delay(1);
+            //digitalWrite(SHIFT_RCLK, LOW);
+     	}
+        printf("-------------------\n");
+        digitalWrite(SHIFT_RCLK, LOW);
+        digitalWrite(SHIFT_RCLK, HIGH);
+	digitalWrite(SHIFT_RCLK, LOW);
+	//digitalWrite(SHIFT_OE, LOW);
+        delay(10);
+	//digitalWrite(SHIFT_OE, HIGH);
     }
 }
 
