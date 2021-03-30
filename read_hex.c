@@ -57,7 +57,7 @@ void writeData(uint8_t size){
     for(uint8_t i=0;i < size; i++){
         unsigned char cmd = data[i];
         printf("cmd: %02x\n", cmd);
-        for(uint8_t j=0; j<12; j++){
+        for(uint8_t j=0; j<8; j++){
             val = cmd & 1;
             printf("bit: %d     ", val);
             cmd = cmd >> 1;
