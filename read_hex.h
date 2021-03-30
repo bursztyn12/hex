@@ -5,6 +5,7 @@ static unsigned char data[WORDS];
 void readHexProgram();
 void printHexContents(uint8_t address_locations);
 void printHexData(uint8_t size);
-void write(uint8_t size);
+void writeData(uint8_t size);
+void writeAddress(uint8_t size);
 int setupWiringPi();
 void setupPins();

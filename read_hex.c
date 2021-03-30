@@ -52,8 +52,8 @@ void printHexContents(uint8_t address_locations){
     }
 }
 
-void write(uint8_t size){
-    int val = 0;
+void writeData(uint8_t size){
+    uint8_t val = 0;
     for(uint8_t i=0;i < size; i++){
         unsigned char cmd = data[i];
         printf("cmd: %02x\n", cmd);
@@ -73,7 +73,30 @@ void write(uint8_t size){
             digitalWrite(SHIFT_RSCLK, HIGH);
             digitalWrite(SHIFT_RSCLK, LOW);
         }
-        delay(500);
+        delay(1000);
+    }
+}
+
+void writeAddress(uint8_t size){
+    uint8_t val = 0;
+    for(uint8_t i=0; i<size; i++){
+        uint8_t address = i;
+        for(uint8_t j=0; j<15 j++){
+            val = cmd & 1;
+            printf("bit: %d     ", val);
+            address = address >> 1;
+            printf("cmd: %d", address);
+            printf("\n");
+            
+            digitalWrite(SHIFT_DATA, val);
+            digitalWrite(SHIFT_CLK, HIGH);
+            delay(1);
+            digitalWrite(SHIFT_CLK, LOW);
+            delay(1);
+            
+            digitalWrite(SHIFT_RSCLK, HIGH);
+            digitalWrite(SHIFT_RSCLK, LOW);
+        }
     }
 }
 
